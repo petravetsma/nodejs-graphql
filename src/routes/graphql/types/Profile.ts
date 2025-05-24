@@ -1,6 +1,7 @@
 import { GraphQLBoolean, GraphQLInputObjectType, GraphQLInt, GraphQLNonNull, GraphQLObjectType } from 'graphql';
 import { UUIDType } from './uuid.js';
-import { MemberTypeIdEnumTS, MemberTypeIdEnum } from './MemberType.js';
+import { MemberTypeIdEnumTS, MemberTypeIdEnum, MemberType } from './MemberType.js';
+import { Context } from './Context.js';
 
 export const ProfileResp = new GraphQLObjectType({
     name: 'ProfileResp',
@@ -10,6 +11,12 @@ export const ProfileResp = new GraphQLObjectType({
         yearOfBirth: { type: new GraphQLNonNull(GraphQLInt) },
         userId: { type: new GraphQLNonNull(UUIDType) },
         memberTypeId: { type: new GraphQLNonNull(MemberTypeIdEnum) },
+        memberType: {
+            type: MemberType,
+            resolve: (parent: IProfile, _, { loader }: Context) => {
+                return loader.memberType.load(parent.memberTypeId);
+            },
+        }
     },
 });
 

@@ -3,13 +3,13 @@ import {
     GraphQLNonNull,
     GraphQLObjectType, GraphQLResolveInfo,
 } from 'graphql';
-import { MemberType, MemberTypeIdEnum } from './types/MemberType.js';
+import { FieldsByTypeName, parseResolveInfo } from 'graphql-parse-resolve-info';
 import { Context } from './types/Context.js';
-import { UUIDType } from './types/uuid.js';
+import { MemberType, MemberTypeIdEnum } from './types/MemberType.js';
 import { PostResp } from './types/Post.js';
 import { ProfileResp } from './types/Profile.js';
 import { UserResp } from './types/User.js';
-import { FieldsByTypeName, parseResolveInfo } from 'graphql-parse-resolve-info';
+import { UUIDType } from './types/uuid.js';
 
 export const Query = new GraphQLObjectType({
     name: 'Query',

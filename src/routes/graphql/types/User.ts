@@ -1,27 +1,39 @@
 import { GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
-import { UUIDType } from './uuid.js';
 import { GraphQLFloat, GraphQLInputObjectType } from 'graphql/index.js';
-import { ProfileResp, IProfile } from './Profile.js';
 import { Context } from './Context.js';
 import { IPost, PostResp } from './Post.js';
+import { IProfile, ProfileResp } from './Profile.js';
+import { UUIDType } from './uuid.js';
 
 export const UserResp = new GraphQLObjectType<IUserBase, Context>({
-    name: 'UserResp',
+    name: 'User',
     fields: () => ({
         id: { type: UUIDType },
         name: { type: new GraphQLNonNull(GraphQLString) },
         balance: { type: new GraphQLNonNull(GraphQLFloat) },
         posts: {
             type: new GraphQLList(PostResp),
+            resolve: (parent: IUserBase, _, { loader }: Context) => {
+                return loader.post.load(parent.id);
+            },
         },
         profile: {
             type: ProfileResp,
+            resolve: (parent: IUserBase, _, { loader }: Context) => {
+                return loader.profile.load(parent.id);
+            }
         },
         subscribedToUser: {
             type: new GraphQLList(UserResp),
+            resolve: (parent: IUserBase, _, { loader }: Context) => {
+                return parent.subscribedToUser ?? loader.subscribedToUser.load(parent.id);
+            }
         },
         userSubscribedTo: {
             type: new GraphQLList(UserResp),
+            resolve: (parent: IUserBase, _, { loader }: Context) => {
+                return parent.userSubscribedTo ?? loader.userSubscribedTo.load(parent.id);
+            }
         },
     })
 }) as unknown as GraphQLObjectType<IUserBase>;
